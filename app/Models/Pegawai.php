@@ -7,5 +7,39 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pegawai extends Model
 {
-    use HasFactory;
+    protected $primaryKey = 'id_pegawai';
+    protected $fillable = [
+        'nama', 'tanggal_lahir', 'email', 'unit_kerja', 'id_jabatan',
+        'id_provinsi', 'id_kota_kabupaten', 'id_kecamatan', 'tanggal_mulai'
+    ];
+
+    public function jabatan()
+    {
+        return $this->belongsTo(Jabatan::class, 'id_jabatan');
+    }
+
+    public function provinsi()
+    {
+        return $this->belongsTo(Provinsi::class, 'id_provinsi');
+    }
+
+    public function kota()
+    {
+        return $this->belongsTo(KotaKabupaten::class, 'id_kota_kabupaten');
+    }
+
+    public function kecamatan()
+    {
+        return $this->belongsTo(Kecamatan::class, 'id_kecamatan');
+    }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id_pegawai');
+    }
+
+    public function pengajuan()
+    {
+        return $this->hasMany(PengajuanKenaikan::class, 'id_pegawai');
+    }
 }

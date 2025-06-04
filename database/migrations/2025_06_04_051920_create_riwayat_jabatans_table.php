@@ -12,8 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('riwayat_jabatans', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_riwayat');
+            $table->unsignedBigInteger('id_pegawai');
+            $table->unsignedBigInteger('id_jabatan');
+            $table->date('tanggal_mulai');
+            $table->date('tanggal_selesai')->nullable(); // null jika masih aktif
             $table->timestamps();
+
+            // $table->foreign('id_pegawai')->references('id_pegawai')->on('pegawais')->onDelete('cascade');
+            // $table->foreign('id_jabatan')->references('id_jabatan')->on('jabatans')->onDelete('cascade');
         });
     }
 

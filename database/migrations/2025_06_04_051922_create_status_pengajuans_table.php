@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('status_pengajuans', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_status');
+            $table->string('nama_status'); // contoh: Menunggu, Diverifikasi, Ditolak, Disetujui
             $table->timestamps();
         });
     }

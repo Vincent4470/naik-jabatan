@@ -7,5 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class KotaKabupaten extends Model
 {
-    use HasFactory;
+    protected $primaryKey = 'id_kota_kabupaten';
+    protected $fillable = ['nama_kota_kab'];
+
+    public function pegawais()
+    {
+        return $this->hasMany(Pegawai::class, 'id_kota_kabupaten');
+    }
 }

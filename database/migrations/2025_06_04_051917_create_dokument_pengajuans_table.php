@@ -11,9 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('dokument_pengajuans', function (Blueprint $table) {
-            $table->id();
+        Schema::create('dokumen_pengajuans', function (Blueprint $table) {
+            $table->id('id_dokumen');
+            $table->unsignedBigInteger('id_pengajuan');
+            $table->string('nama_dokumen'); // nama seperti "SK Jabatan"
+            $table->string('file_path'); // lokasi file di storage/public
             $table->timestamps();
+
+            // $table->foreign('id_pengajuan')->references('id_pengajuan')->on('pengajuan_kenaikans')->onDelete('cascade');
         });
     }
 

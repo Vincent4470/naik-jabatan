@@ -12,9 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('penilaians', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        $table->id('id_penilaian');
+        $table->unsignedBigInteger('id_pengajuan')->unique(); // one-to-one
+        $table->unsignedBigInteger('id_user_admin'); // user yang menilai (admin)
+        $table->text('hasil_penilaian'); // isi penilaian/verifikasi
+        $table->date('tanggal_penilaian');
+        $table->timestamps();
+
+        // $table->foreign('id_pengajuan')->references('id_pengajuan')->on('pengajuan_kenaikans')->onDelete('cascade');
+        // $table->foreign('id_user_admin')->references('id_user')->on('users')->onDelete('cascade');
+    });
     }
 
     /**

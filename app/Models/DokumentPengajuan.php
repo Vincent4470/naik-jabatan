@@ -7,5 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class DokumentPengajuan extends Model
 {
-    use HasFactory;
+    protected $primaryKey = 'id_dokumen';
+    protected $fillable = ['id_pengajuan', 'nama_dokumen', 'file_path'];
+
+    public function pengajuan()
+    {
+        return $this->belongsTo(PengajuanKenaikan::class, 'id_pengajuan');
+    }
 }
