@@ -19,11 +19,6 @@ return new class extends Migration
         $table->unsignedBigInteger('id_status'); // foreign key ke status_pengajuan
         $table->text('catatan')->nullable();
         $table->timestamps();
-
-        // Foreign keys
-        // $table->foreign('id_pegawai')->references('id_pegawai')->on('pegawais')->onDelete('cascade');
-        // $table->foreign('id_jabatan_baru')->references('id_jabatan')->on('jabatans')->onDelete('cascade');
-        // $table->foreign('id_status')->references('id_status')->on('status_pengajuans')->onDelete('cascade');
     });
     }
 

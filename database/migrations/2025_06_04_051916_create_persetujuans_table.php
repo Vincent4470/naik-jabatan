@@ -19,9 +19,6 @@ return new class extends Migration
             $table->text('catatan')->nullable(); // alasan atau pesan
             $table->date('tanggal_persetujuan');
             $table->timestamps();
-
-            // $table->foreign('id_pengajuan')->references('id_pengajuan')->on('pengajuan_kenaikans')->onDelete('cascade');
-            // $table->foreign('id_user_atasan')->references('id_user')->on('users')->onDelete('cascade');
         });
     }
 

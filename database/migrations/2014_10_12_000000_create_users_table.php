@@ -19,10 +19,6 @@ return new class extends Migration
             $table->unsignedBigInteger('id_pegawai')->nullable();
             $table->rememberToken();
             $table->timestamps();
-
-            // Foreign key
-            // $table->foreign('id_role')->references('id_role')->on('role_users')->onDelete('cascade');
-            // $table->foreign('id_pegawai')->references('id_pegawai')->on('pegawais')->onDelete('cascade');
         });
     }
 
