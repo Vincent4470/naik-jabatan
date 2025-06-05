@@ -14,8 +14,8 @@ class KotaKabupatensSeeder extends Seeder
     public function run()
     {
         $kotaKabList = [
-            // 'KOTA MEDAN',
-            // Tambah sesuai data 
+            
+            // Tambah sesuai data
         ];
 
         $data = [];
