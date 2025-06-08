@@ -17,7 +17,9 @@ class DatabaseSeeder extends Seeder
         ProvinsisSeeder::class,
         RoleUsersSeeder::class,
         KecamatansSeeder::class,
-        KotaKabupatensSeeder::class
+        KotaKabupatensSeeder::class,
+        jabatansSeeder::class,
+        StatusPengajuansSeeder::class
     ]);
     }
 }
