@@ -14,4 +14,8 @@ class Provinsi extends Model
     {
         return $this->hasMany(Pegawai::class, 'id_provinsi');
     }
+    public function kotaKabupatens()
+    {
+        return $this->hasMany(KotaKabupaten::class, 'id_provinsi');
+    }
 }

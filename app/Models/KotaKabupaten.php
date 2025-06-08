@@ -14,4 +14,12 @@ class KotaKabupaten extends Model
     {
         return $this->hasMany(Pegawai::class, 'id_kota_kabupaten');
     }
+    public function provinsi()
+    {
+        return $this->belongsTo(Provinsi::class, 'id_provinsi');
+    }
+    public function kecamatans()
+    {
+        return $this->hasMany(Kecamatan::class, 'id_kota_kabupaten');
+    }
 }
