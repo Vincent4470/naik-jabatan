@@ -16,6 +16,8 @@ return new class extends Migration
         $table->string('nama');
         $table->date('tanggal_lahir');
         $table->string('email')->unique();
+        $table->string('foto_profil')->nullable();
+        $table->text('alamat')->nullable();
         $table->string('unit_kerja');
         $table->unsignedBigInteger('id_jabatan')->nullable(); // jabatan sekarang
         $table->unsignedBigInteger('id_provinsi')->nullable();

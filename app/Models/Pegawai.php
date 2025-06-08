@@ -9,8 +9,17 @@ class Pegawai extends Model
 {
     protected $primaryKey = 'id_pegawai';
     protected $fillable = [
-        'nama', 'tanggal_lahir', 'email', 'unit_kerja', 'id_jabatan',
-        'id_provinsi', 'id_kota_kabupaten', 'id_kecamatan', 'tanggal_mulai'
+        'nama',
+        'tanggal_lahir',
+        'email',
+        'foto_profil',
+        'alamat',
+        'unit_kerja',
+        'id_jabatan',
+        'id_provinsi',
+        'id_kota_kabupaten',
+        'id_kecamatan',
+        'tanggal_mulai'
     ];
 
     public function jabatan()
