@@ -13,6 +13,7 @@ class PengajuanKenaikan extends Model
         'id_jabatan_baru',
         'tanggal_pengajuan',
         'id_status',
+        'id_periode',
         'catatan'
     ];
 
@@ -49,5 +50,10 @@ class PengajuanKenaikan extends Model
     public function logStatus()
     {
         return $this->hasMany(PengajuanStatusLog::class, 'id_pengajuan');
+    }
+
+    public function periode()
+    {
+        return $this->belongsTo(Periode::class, 'id_periode');
     }
 }

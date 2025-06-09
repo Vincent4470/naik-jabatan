@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('kecamatans', function (Blueprint $table) {
             $table->id('id_kecamatan');
             $table->string('nama_kecamatan');
+            $table->unsignedBigInteger('id_kota_kabupaten')->nullable();
             $table->timestamps();
         });
     }

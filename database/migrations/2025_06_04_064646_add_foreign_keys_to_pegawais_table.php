@@ -6,10 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-     public function up(): void
+    public function up(): void
     {
         Schema::table('pegawais', function (Blueprint $table) {
             $table->foreign('id_jabatan')->references('id_jabatan')->on('jabatans')->onDelete('set null');

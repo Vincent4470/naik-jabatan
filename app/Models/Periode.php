@@ -11,5 +11,9 @@ class Periode extends Model
 
     protected $primaryKey = 'id_periode';
 
-    protected $fillable = ['nama_periode', 'tanggal_mulai', 'tanggal_selesai'];
+    protected $fillable = [
+        'nama_periode',
+        'tanggal_mulai',
+        'tanggal_selesai'
+    ];
 }

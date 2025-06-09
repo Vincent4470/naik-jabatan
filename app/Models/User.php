@@ -13,8 +13,17 @@ class User extends Authenticatable
     use Notifiable;
 
     protected $primaryKey = 'id_user';
-    protected $fillable = ['username', 'password', 'id_role', 'id_pegawai'];
-    protected $hidden = ['password', 'remember_token'];
+    protected $fillable = [
+        'username',
+        'email',
+        'password',
+        'id_role',
+        'id_pegawai'
+    ];
+    protected $hidden = [
+        'password',
+        'remember_token'
+    ];
 
     public function role()
     {

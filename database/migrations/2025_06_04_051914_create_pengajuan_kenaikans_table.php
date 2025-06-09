@@ -12,14 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pengajuan_kenaikans', function (Blueprint $table) {
-        $table->id('id_pengajuan');
-        $table->unsignedBigInteger('id_pegawai');
-        $table->unsignedBigInteger('id_jabatan_baru');
-        $table->date('tanggal_pengajuan');
-        $table->unsignedBigInteger('id_status'); // foreign key ke status_pengajuan
-        $table->text('catatan')->nullable();
-        $table->timestamps();
-    });
+            $table->id('id_pengajuan');
+            $table->unsignedBigInteger('id_pegawai');
+            $table->unsignedBigInteger('id_jabatan_baru');
+            $table->date('tanggal_pengajuan');
+            $table->unsignedBigInteger('id_status'); // foreign key ke status_pengajuan
+            $table->unsignedBigInteger('id_periode')->nullable(); // foreign key ke status_pengajuan
+            $table->text('catatan')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**
