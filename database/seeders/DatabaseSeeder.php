@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
         KecamatansSeeder::class,
         RoleUsersSeeder::class,
         jabatansSeeder::class,
-        StatusPengajuansSeeder::class
+        StatusPengajuansSeeder::class,
+        AdminUserSeeder::class
     ]);
     }
 }
