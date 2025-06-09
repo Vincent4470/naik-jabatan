@@ -2376,6 +2376,7 @@ class KecamatansSeeder extends Seeder
             $data[] = [
                 'id_kecamatan' => $index + 1, // atau kamu bisa hapus ini jika auto increment
                 'nama_kecamatan' => $nama,
+                'id_kota_kabupaten' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
