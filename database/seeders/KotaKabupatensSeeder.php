@@ -537,7 +537,7 @@ class KotaKabupatensSeeder extends Seeder
         foreach ($kotaKabList as $index => $nama) {
             $data[] = [
                 'id_provinsi' => 1,
-                'id_kota_kabupaten' => $index + 1,  // opsional, bisa dihapus kalau auto increment
+                'id_kota_kabupaten' => $index + 1,
                 'nama_kota_kab' => $nama,
                 'created_at' => now(),
                 'updated_at' => now(),
