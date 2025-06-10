@@ -12,20 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pegawais', function (Blueprint $table) {
-        $table->id('id_pegawai');
-        $table->string('nama');
-        $table->date('tanggal_lahir');
-        $table->string('email')->unique();
-        $table->string('foto_profil')->nullable();
-        $table->text('alamat')->nullable();
-        $table->string('unit_kerja');
-        $table->unsignedBigInteger('id_jabatan')->nullable(); // jabatan sekarang
-        $table->unsignedBigInteger('id_provinsi')->nullable();
-        $table->unsignedBigInteger('id_kota_kabupaten')->nullable();
-        $table->unsignedBigInteger('id_kecamatan')->nullable();
-        $table->date('tanggal_mulai')->nullable();
-        $table->timestamps();
-    });
+            $table->id('id_pegawai');
+            $table->string('nama');
+            $table->string('nip')->unique()->nullable();
+            $table->date('tanggal_lahir');
+            $table->string('email')->nullable();
+            $table->string('foto_profil')->nullable();
+            $table->text('alamat')->nullable();
+            $table->string('unit_kerja')->nullable();
+            $table->unsignedBigInteger('id_jabatan')->nullable();
+            $table->unsignedBigInteger('id_provinsi')->nullable();
+            $table->unsignedBigInteger('id_kota_kabupaten')->nullable();
+            $table->unsignedBigInteger('id_kecamatan')->nullable();
+            $table->date('tanggal_mulai')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**

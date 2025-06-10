@@ -8,8 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Pegawai extends Model
 {
     protected $primaryKey = 'id_pegawai';
+
+    public $incrementing = true;
+    protected $keyType = 'int';
+
     protected $fillable = [
         'nama',
+        'nip',
         'tanggal_lahir',
         'email',
         'foto_profil',
