@@ -15,7 +15,6 @@ class CreatePegawai extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        // Generate NIP
         $kodeProvinsi = str_pad($data['id_provinsi'] ?? 0, 2, '0', STR_PAD_LEFT);
         $kodeKota = str_pad($data['id_kota_kabupaten'] ?? 0, 2, '0', STR_PAD_LEFT);
         $kodeKecamatan = str_pad($data['id_kecamatan'] ?? 0, 2, '0', STR_PAD_LEFT);
@@ -29,27 +28,33 @@ class CreatePegawai extends CreateRecord
 
         $nomorUrut = str_pad($count + 1, 3, '0', STR_PAD_LEFT);
 
-        $nip = $kodeProvinsi . $kodeKota . $kodeKecamatan . $tglLahir . $nomorUrut;
-
-        $data['nip'] = $nip;
+        $data['nip'] = $kodeProvinsi . $kodeKota . $kodeKecamatan . $tglLahir . $nomorUrut;
 
         return $data;
     }
 
     protected function afterCreate(): void
     {
-        /** @var Pegawai $pegawai */
         $pegawai = $this->record;
 
-        $password = $this->data['password'];
+        $formState = $this->form->getState();
+        $password = $formState['password'];
 
-        User::create([
-            'name' => $pegawai->nama,
-            'username' => $pegawai->nip, // kalau mau NIP dipakai login
-            'email' => $pegawai->email ?? 'default@example.com',
-            'password' => Hash::make($password),
-            'id_role' => 1,
-            'id_pegawai' => $pegawai->id_pegawai,
-        ]);
+        // Cek jika user belum ada untuk pegawai ini
+        if (!User::where('id_pegawai', $pegawai->id_pegawai)->exists()) {
+            User::create([
+                'name' => $pegawai->nama,
+                'username' => $pegawai->nip,
+                'email' => $pegawai->email ?? $pegawai->nip . '@example.com',
+                'password' => Hash::make($password),
+                'id_role' => 1,
+                'id_pegawai' => $pegawai->id_pegawai,
+            ]);
+        }
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
     }
 }
