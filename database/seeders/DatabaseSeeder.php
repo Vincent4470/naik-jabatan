@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
        $this->call([
         ProvinsisSeeder::class,
         KotaKabupatensSeeder::class,
-        KecamatansSeeder::class,
         RoleUsersSeeder::class,
         jabatansSeeder::class,
         StatusPengajuansSeeder::class,
