@@ -35,6 +35,13 @@ class PegawaiResource extends Resource
                     ->email()
                     ->nullable(),
 
+                Forms\Components\Select::make('id_jabatan')
+                    ->label('Jabatan')
+                    ->options(fn() => \App\Models\Jabatan::pluck('nama_jabatan', 'id_jabatan')->toArray())
+                    ->searchable()
+                    ->required(),
+
+
                 Forms\Components\TextInput::make('unit_kerja')
                     ->nullable(),
 
@@ -72,6 +79,17 @@ class PegawaiResource extends Resource
                             ->toArray();
                     })
                     ->nullable(),
+                Forms\Components\Textarea::make('alamat')
+                    ->label('Alamat')
+                    ->nullable(),
+
+                Forms\Components\FileUpload::make('foto_profil')
+                    ->label('Foto Profil')
+                    ->image()
+                    ->directory('foto-profil')
+                    ->imagePreviewHeight('100')
+                    ->nullable()
+                    ->previewable(true),
 
                 Forms\Components\DatePicker::make('tanggal_mulai')
                     ->nullable(),
@@ -106,7 +124,7 @@ class PegawaiResource extends Resource
                 Tables\Columns\TextColumn::make('kecamatan.nama_kecamatan')->label('Kecamatan'),
                 Tables\Columns\TextColumn::make('tanggal_lahir')->date()->label('Tanggal Lahir'),
                 Tables\Columns\TextColumn::make('user.username')->label('Username'),
-                Tables\Columns\TextColumn::make('user.email')->label('Email'),
+                Tables\Columns\TextColumn::make('jabatan.nama_jabatan')->label('Jabatan'),
 
             ])
             ->actions([

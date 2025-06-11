@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\JabatanResource\Pages;
 
 use App\Filament\Resources\JabatanResource;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -15,5 +16,10 @@ class ListJabatans extends ListRecords
         return [
             Actions\CreateAction::make(),
         ];
+    }
+
+    protected function getTableQuery(): Builder
+    {
+        return parent::getTableQuery()->withCount('pegawai');
     }
 }

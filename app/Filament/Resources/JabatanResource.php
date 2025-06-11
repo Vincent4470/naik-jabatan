@@ -14,6 +14,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class JabatanResource extends Resource
 {
@@ -38,6 +39,27 @@ class JabatanResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('nama_jabatan')->label('Nama Jabatan'),
+
+            TextColumn::make('pegawai_count')
+                ->label('Jumlah Pegawai'),
+
+            TextColumn::make('wilayah')
+                ->label('Wilayah Terdaftar')
+                ->getStateUsing(function ($record) {
+                    $wilayah = $record->pegawai()
+                        ->with(['provinsi', 'kota'])
+                        ->get()
+                        ->map(function ($pegawai) {
+                            return $pegawai->kota->nama_kota_kab ?? $pegawai->provinsi->nama_provinsi ?? null;
+                        })
+                        ->filter()
+                        ->unique()
+                        ->values()
+                        ->all();
+
+                    return Str::limit(implode(', ', $wilayah), 50);
+                })
+                ->wrap(),
             ])
             ->filters([
                 //
