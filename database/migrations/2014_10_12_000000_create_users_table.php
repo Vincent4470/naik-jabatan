@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('username');
             $table->string('email')->unique();
             $table->string('password');
-            $table->unsignedBigInteger('id_role')->default(1);
+            $table->unsignedBigInteger('id_role')->nullable();
             $table->unsignedBigInteger('id_pegawai')->nullable();
             $table->rememberToken();
             $table->timestamps();
