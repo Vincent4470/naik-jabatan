@@ -7,6 +7,7 @@ use Filament\Resources\Pages\CreateRecord;
 use Carbon\Carbon;
 use App\Models\Pegawai;
 use App\Models\User;
+use App\Models\RoleUser;
 use Illuminate\Support\Facades\Hash;
 
 class CreatePegawai extends CreateRecord
@@ -36,9 +37,21 @@ class CreatePegawai extends CreateRecord
     protected function afterCreate(): void
     {
         $pegawai = $this->record;
-
         $formState = $this->form->getState();
         $password = $formState['password'];
+
+        // Mapping role berdasarkan jabatan.level
+        $level = $pegawai->jabatan?->level;
+        $roleName = 'User'; // default
+
+        if (in_array($level, [1, 2, 3])) {
+            $roleName = 'Atasan';
+        } elseif (in_array($level, [4, 5])) {
+            $roleName = 'Hrd';
+        }
+
+        $id_role = RoleUser::where('nama_role', $roleName)->value('id_role')
+            ?? RoleUser::where('nama_role', 'User')->value('id_role');
 
         // Cek jika user belum ada untuk pegawai ini
         if (!User::where('id_pegawai', $pegawai->id_pegawai)->exists()) {
@@ -47,11 +60,12 @@ class CreatePegawai extends CreateRecord
                 'username' => $pegawai->nip,
                 'email' => $pegawai->email ?? $pegawai->nip . '@example.com',
                 'password' => Hash::make($password),
-                'id_role' => 1,
+                'id_role' => $id_role,
                 'id_pegawai' => $pegawai->id_pegawai,
             ]);
         }
     }
+
 
     protected function getRedirectUrl(): string
     {

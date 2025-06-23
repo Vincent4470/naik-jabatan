@@ -21,9 +21,9 @@ use Filament\Forms\Components\Hidden;
 
 class UserResource extends Resource
 {
-    protected static ?string $model = User::class;
+    protected static ?string $model = User::class; 
+protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
@@ -50,7 +50,9 @@ class UserResource extends Resource
                     ->content(fn($record) => $record?->role?->nama_role ?? 'Akan ditentukan otomatis'),
 
                 // 🔥 Tambahkan ini!
-                Hidden::make('id_role'),
+                Hidden::make('id_role')
+                    ->default(null)
+                    ->dehydrated(),
             ]);
     }
 
@@ -76,6 +78,7 @@ class UserResource extends Resource
             ]);
     }
 
+    // UserResource.php
     public static function getPages(): array
     {
         return [
