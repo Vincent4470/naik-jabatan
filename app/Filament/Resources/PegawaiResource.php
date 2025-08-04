@@ -33,7 +33,8 @@ class PegawaiResource extends Resource
 
                 Forms\Components\TextInput::make('email')
                     ->email()
-                    ->nullable(),
+                    ->nullable()
+                    ->required(),
 
                 Forms\Components\Select::make('id_jabatan')
                     ->label('Jabatan')

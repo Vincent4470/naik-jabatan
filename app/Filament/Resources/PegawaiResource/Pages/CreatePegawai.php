@@ -4,45 +4,27 @@ namespace App\Filament\Resources\PegawaiResource\Pages;
 
 use App\Filament\Resources\PegawaiResource;
 use Filament\Resources\Pages\CreateRecord;
-use Carbon\Carbon;
-use App\Models\Pegawai;
+use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\RoleUser;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class CreatePegawai extends CreateRecord
 {
     protected static string $resource = PegawaiResource::class;
 
-    protected function mutateFormDataBeforeCreate(array $data): array
+    /**
+     * Override method ini untuk menggabungkan pembuatan Pegawai dan User.
+     */
+    protected function handleRecordCreation(array $data): Model
     {
-        $kodeProvinsi = str_pad($data['id_provinsi'] ?? 0, 2, '0', STR_PAD_LEFT);
-        $kodeKota = str_pad($data['id_kota_kabupaten'] ?? 0, 2, '0', STR_PAD_LEFT);
-        $kodeKecamatan = str_pad($data['id_kecamatan'] ?? 0, 2, '0', STR_PAD_LEFT);
-        $tglLahir = Carbon::parse($data['tanggal_lahir'])->format('Ymd');
+        // 1. Buat data pegawai terlebih dahulu
+        $pegawai = static::getModel()::create($data);
 
-        $count = Pegawai::where('id_provinsi', $data['id_provinsi'])
-            ->where('id_kota_kabupaten', $data['id_kota_kabupaten'])
-            ->where('id_kecamatan', $data['id_kecamatan'])
-            ->whereDate('tanggal_lahir', $data['tanggal_lahir'])
-            ->count();
-
-        $nomorUrut = str_pad($count + 1, 3, '0', STR_PAD_LEFT);
-
-        $data['nip'] = $kodeProvinsi . $kodeKota . $kodeKecamatan . $tglLahir . $nomorUrut;
-
-        return $data;
-    }
-
-    protected function afterCreate(): void
-    {
-        $pegawai = $this->record;
-        $formState = $this->form->getState();
-        $password = $formState['password'];
-
-        // Mapping role berdasarkan jabatan.level
+        // 2. Tentukan Role berdasarkan level jabatan
         $level = $pegawai->jabatan?->level;
-        $roleName = 'User'; // default
+        $roleName = 'User'; // Default role
 
         if (in_array($level, [1, 2, 3])) {
             $roleName = 'Atasan';
@@ -50,22 +32,24 @@ class CreatePegawai extends CreateRecord
             $roleName = 'Hrd';
         }
 
-        $id_role = RoleUser::where('nama_role', $roleName)->value('id_role')
-            ?? RoleUser::where('nama_role', 'User')->value('id_role');
+        $id_role = RoleUser::where('nama_role', $roleName)->value('id_role');
 
-        // Cek jika user belum ada untuk pegawai ini
-        if (!User::where('id_pegawai', $pegawai->id_pegawai)->exists()) {
-            User::create([
-                'name' => $pegawai->nama,
-                'username' => $pegawai->nip,
-                'email' => $pegawai->email ?? $pegawai->nip . '@example.com',
-                'password' => Hash::make($password),
-                'id_role' => $id_role,
-                'id_pegawai' => $pegawai->id_pegawai,
-            ]);
-        }
+        // 3. PERBAIKAN: Buat username dari jabatan dan nama
+        $jabatanName = $pegawai->jabatan?->nama_jabatan ?? 'pegawai';
+        $username = Str::slug($jabatanName . ' ' . $pegawai->nama);
+
+        // 4. Buat user baru dengan data yang benar
+        User::create([
+            'name' => $pegawai->nama,
+            'username' => $username, // Menggunakan username yang baru
+            'email' => $pegawai->email ?? $username . '@example.com',
+            'password' => Hash::make('password'), // Password default
+            'id_role' => $id_role,
+            'id_pegawai' => $pegawai->id_pegawai,
+        ]);
+
+        return $pegawai;
     }
-
 
     protected function getRedirectUrl(): string
     {
