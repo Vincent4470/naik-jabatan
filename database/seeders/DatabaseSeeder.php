@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
         RoleUsersSeeder::class,
         jabatansSeeder::class,
         StatusPengajuansSeeder::class,
-        AdminUserSeeder::class
+        AdminUserSeeder::class,
+        subKriteriaPenilaianSeeder::class,
     ]);
     }
 }

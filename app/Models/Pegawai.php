@@ -24,12 +24,18 @@ class Pegawai extends Model
         'id_provinsi',
         'id_kota_kabupaten',
         'id_kecamatan',
-        'tanggal_mulai'
+        'tanggal_mulai',
+        'id_atasan_langsung',
     ];
 
     public function jabatan()
     {
         return $this->belongsTo(Jabatan::class, 'id_jabatan');
+    }
+
+    public function atasanLangsung()
+    {
+        return $this->belongsTo(Pegawai::class, 'id_atasan_langsung', 'id_pegawai');
     }
 
     public function provinsi()
