@@ -3,22 +3,24 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\KotaKabupatenResource\Pages;
-use App\Filament\Resources\KotaKabupatenResource\RelationManagers;
 use App\Models\KotaKabupaten;
+use App\Models\Provinsi;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class KotaKabupatenResource extends Resource
 {
     protected static ?string $model = KotaKabupaten::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
-    protected static ?string $navigationLabel = 'Kota/Kabupaten';
+
+    // 2. Kelompokkan menu di sidebar
+    protected static ?string $navigationGroup = 'Manajemen Wilayah';
+
+    protected static ?string $modelLabel = 'Kota/Kabupaten';
     protected static ?string $pluralModelLabel = 'Kota/Kabupaten';
 
     public static function form(Form $form): Form
@@ -27,7 +29,9 @@ class KotaKabupatenResource extends Resource
             ->schema([
                 Forms\Components\Select::make('id_provinsi')
                     ->label('Provinsi')
-                    ->options(ProvinsiResource::pluck('nama_provinsi', 'id_provinsi'))
+                    // 3. Ambil data dari Model, bukan Resource
+                    ->options(Provinsi::all()->pluck('nama_provinsi', 'id_provinsi'))
+                    ->searchable() // Tambahkan fitur pencarian
                     ->required(),
 
                 Forms\Components\TextInput::make('nama_kota_kab')
@@ -41,11 +45,19 @@ class KotaKabupatenResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('provinsi.nama_provinsi')->label('Provinsi'),
-                Tables\Columns\TextColumn::make('nama_kota_kab')->label('Kota/Kabupaten'),
+                Tables\Columns\TextColumn::make('provinsi.nama_provinsi')
+                    ->label('Provinsi')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('nama_kota_kab')
+                    ->label('Kota/Kabupaten')
+                    ->searchable(),
             ])
             ->filters([
-                //
+                // 4. Tambahkan filter berdasarkan provinsi
+                Tables\Filters\SelectFilter::make('id_provinsi')
+                    ->relationship('provinsi', 'nama_provinsi')
+                    ->label('Filter Provinsi')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -56,13 +68,6 @@ class KotaKabupatenResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array

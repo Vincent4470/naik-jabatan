@@ -11,61 +11,82 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Placeholder;
-use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Facades\Hash;
-use Filament\Forms\Components\Hidden;
-
+use Filament\Forms\Get;
+use Illuminate\Database\Eloquent\Model;
 
 class UserResource extends Resource
 {
-    protected static ?string $model = User::class; 
-protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $model = User::class;
 
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')->label('Nama')->required(),
-                TextInput::make('username')->required(),
-                TextInput::make('email')->email()->required(),
-                TextInput::make('password')
-                    ->password()
-                    ->label('Password')
-                    ->required(fn(string $context) => $context === 'create')
-                    ->dehydrateStateUsing(fn($state) => Hash::make($state))
-                    ->dehydrated(fn($state) => filled($state)),
+                Forms\Components\Section::make('Detail Akun')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')->label('Nama')->required(),
+                        Forms\Components\TextInput::make('username')->required()->unique(ignoreRecord: true),
+                        Forms\Components\TextInput::make('email')->email()->required()->unique(ignoreRecord: true),
+                        Forms\Components\TextInput::make('password')
+                            ->password()
+                            ->label('Password')
+                            ->required(fn (string $context): bool => $context === 'create') // Wajib hanya saat membuat
+                            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                            ->dehydrated(fn ($state) => filled($state)),
+                    ])->columns(2),
 
-                Select::make('id_pegawai')
-                    ->label('Pegawai (opsional)')
-                    ->options(Pegawai::pluck('nama', 'id_pegawai'))
-                    ->searchable()
-                    ->nullable(),
+                Forms\Components\Section::make('Keterkaitan & Role')
+                    ->schema([
+                        Forms\Components\Select::make('id_pegawai')
+                            ->label('Pegawai (opsional)')
+                            ->relationship('pegawai', 'nama')
+                            ->searchable()
+                            ->live() // Memicu update form saat diubah
+                            ->nullable(),
 
-                Placeholder::make('role_info')
-                    ->label('Role (otomatis)')
-                    ->content(fn($record) => $record?->role?->nama_role ?? 'Akan ditentukan otomatis'),
+                        // Muncul hanya jika tidak ada pegawai yang dipilih
+                        Forms\Components\Select::make('id_role')
+                            ->label('Role Pengguna')
+                            ->options(RoleUser::all()->pluck('nama_role', 'id_role'))
+                            ->searchable()
+                            ->required()
+                            ->visible(fn (Get $get) => empty($get('id_pegawai'))),
 
-                // 🔥 Tambahkan ini!
-                Hidden::make('id_role')
-                    ->default(null)
-                    ->dehydrated(),
+                        // Muncul hanya jika ada pegawai yang dipilih
+                        Forms\Components\Placeholder::make('role_otomatis')
+                            ->label('Role (Otomatis)')
+                            ->content(function (Get $get) {
+                                $pegawaiId = $get('id_pegawai');
+                                if (!$pegawaiId) {
+                                    return 'Akan ditentukan otomatis setelah pegawai dipilih.';
+                                }
+                                $pegawai = Pegawai::with('jabatan')->find($pegawaiId);
+                                $level = $pegawai?->jabatan?->level;
+
+                                if (in_array($level, [1, 2, 3])) return 'Atasan';
+                                if (in_array($level, [4, 5])) return 'Hrd';
+                                return 'User';
+                            })
+                            ->visible(fn (Get $get) => !empty($get('id_pegawai'))),
+                    ]),
             ]);
     }
-
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('name')->label('Nama'),
-                TextColumn::make('username'),
-                TextColumn::make('email'),
-                TextColumn::make('role.nama_role')->label('Role'),
-                TextColumn::make('pegawai.nama')->label('Pegawai'),
+                Tables\Columns\TextColumn::make('name')->label('Nama')->searchable(),
+                Tables\Columns\TextColumn::make('username')->searchable(),
+                Tables\Columns\TextColumn::make('email')->searchable(),
+                Tables\Columns\TextColumn::make('role.nama_role')->label('Role'),
+                Tables\Columns\TextColumn::make('pegawai.nama')->label('Pegawai Terkait')->placeholder('Tidak ada'),
+            ])
+            ->filters([
+                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -78,7 +99,39 @@ protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
             ]);
     }
 
-    // UserResource.php
+    // Logika penentuan role otomatis dipindahkan ke sini
+    public static function fillAndMutateFormData(array $data): array
+    {
+        // Jika ada pegawai yang dipilih, tentukan rolenya secara otomatis
+        if (!empty($data['id_pegawai'])) {
+            $pegawai = Pegawai::with('jabatan')->find($data['id_pegawai']);
+            $level = $pegawai?->jabatan?->level;
+
+            $roleName = 'User'; // Default
+            if (in_array($level, [1, 2, 3])) {
+                $roleName = 'Atasan';
+            } elseif (in_array($level, [4, 5])) {
+                $roleName = 'Hrd';
+            }
+
+            $data['id_role'] = RoleUser::where('nama_role', $roleName)->value('id_role');
+        }
+
+        return $data;
+    }
+
+    // Terapkan logika yang sama saat membuat record baru
+    public static function mutateFormDataBeforeCreate(array $data): array
+    {
+        return static::fillAndMutateFormData($data);
+    }
+
+    // Terapkan logika yang sama saat mengedit record
+    public static function mutateFormDataBeforeSave(array $data): array
+    {
+        return static::fillAndMutateFormData($data);
+    }
+
     public static function getPages(): array
     {
         return [

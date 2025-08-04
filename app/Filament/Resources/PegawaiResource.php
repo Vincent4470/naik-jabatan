@@ -49,6 +49,7 @@ class PegawaiResource extends Resource
                     ->label('Provinsi')
                     ->options(fn() => DB::table('provinsis')->pluck('nama_provinsi', 'id_provinsi')->toArray())
                     ->nullable()
+                    ->required()
                     ->reactive(),
 
                 Forms\Components\Select::make('id_kota_kabupaten')
@@ -64,6 +65,7 @@ class PegawaiResource extends Resource
                             ->toArray();
                     })
                     ->nullable()
+                    ->required()
                     ->reactive(),
 
                 Forms\Components\Select::make('id_kecamatan')
@@ -81,6 +83,7 @@ class PegawaiResource extends Resource
                     ->nullable(),
                 Forms\Components\Textarea::make('alamat')
                     ->label('Alamat')
+                    ->required()
                     ->nullable(),
 
                 Forms\Components\FileUpload::make('foto_profil')

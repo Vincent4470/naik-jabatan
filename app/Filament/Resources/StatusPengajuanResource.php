@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\StatusPengajuanResource\Pages;
-use App\Filament\Resources\StatusPengajuanResource\RelationManagers;
 use App\Models\StatusPengajuan;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class StatusPengajuanResource extends Resource
 {
@@ -35,8 +32,12 @@ class StatusPengajuanResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nama_status')->label('Status'),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Dibuat'),
+                Tables\Columns\TextColumn::make('nama_status')
+                    ->label('Status')
+                    ->searchable(), // <-- TAMBAHKAN INI
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->label('Dibuat'),
             ])
             ->filters([
                 //
@@ -50,13 +51,6 @@ class StatusPengajuanResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array

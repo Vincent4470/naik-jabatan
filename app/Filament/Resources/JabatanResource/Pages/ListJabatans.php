@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\JabatanResource\Pages;
 
 use App\Filament\Resources\JabatanResource;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Builder; // Pastikan ini diimpor
 
 class ListJabatans extends ListRecords
 {
@@ -18,8 +18,12 @@ class ListJabatans extends ListRecords
         ];
     }
 
+    /**
+     * Memuat penghitungan jumlah pegawai secara efisien.
+     * Pastikan nama relasi di sini adalah 'pegawais' (jamak).
+     */
     protected function getTableQuery(): Builder
     {
-        return parent::getTableQuery()->withCount('pegawai');
+        return parent::getTableQuery()->withCount('pegawais');
     }
 }

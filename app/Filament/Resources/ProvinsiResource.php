@@ -3,22 +3,24 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProvinsiResource\Pages;
-use App\Filament\Resources\ProvinsiResource\RelationManagers;
 use App\Models\Provinsi;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProvinsiResource extends Resource
 {
     protected static ?string $model = Provinsi::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-map';
-    protected static ?string $navigationLabel = 'Provinsi';
+
+    // Saran: Kelompokkan menu di sidebar
+    protected static ?string $navigationGroup = 'Manajemen Wilayah';
+
+    // Saran: Beri label yang lebih rapi
+    protected static ?string $modelLabel = 'Provinsi';
     protected static ?string $pluralModelLabel = 'Provinsi';
 
     public static function form(Form $form): Form
@@ -34,8 +36,11 @@ class ProvinsiResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id_provinsi')->sortable(),
-                Tables\Columns\TextColumn::make('nama_provinsi')->searchable(),
+                Tables\Columns\TextColumn::make('id_provinsi')
+                    ->label('ID')
+                    ->sortable(), // <-- Saran: Tambahkan sortable
+                Tables\Columns\TextColumn::make('nama_provinsi')
+                    ->searchable(),
             ])
             ->filters([
                 //

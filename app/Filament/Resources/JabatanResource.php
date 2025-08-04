@@ -3,34 +3,33 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\JabatanResource\Pages;
-use App\Filament\Resources\JabatanResource\RelationManagers;
 use App\Models\Jabatan;
 use Filament\Forms;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
 
 class JabatanResource extends Resource
 {
     protected static ?string $model = Jabatan::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
-    protected static ?string $recordKeyName = 'id_jabatan';
+    protected static ?string $navigationGroup = 'Manajemen Kepegawaian';
+    protected static ?string $modelLabel = 'Jabatan';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('nama_jabatan')
+                Forms\Components\TextInput::make('nama_jabatan')
                     ->label('Nama Jabatan')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('level')
+                    ->label('Level Jabatan')
+                    ->numeric()
+                    ->required()
+                    ->helperText('Semakin kecil angka, semakin tinggi jabatan.'),
             ]);
     }
 
@@ -38,28 +37,20 @@ class JabatanResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('nama_jabatan')->label('Nama Jabatan'),
+                Tables\Columns\TextColumn::make('nama_jabatan')
+                    ->label('Nama Jabatan')
+                    ->searchable()
+                    ->sortable(),
 
-            TextColumn::make('pegawai_count')
-                ->label('Jumlah Pegawai'),
+                Tables\Columns\TextColumn::make('level')
+                    ->label('Level')
+                    ->sortable(),
 
-            TextColumn::make('wilayah')
-                ->label('Wilayah Terdaftar')
-                ->getStateUsing(function ($record) {
-                    $wilayah = $record->pegawai()
-                        ->with(['provinsi', 'kota'])
-                        ->get()
-                        ->map(function ($pegawai) {
-                            return $pegawai->kota->nama_kota_kab ?? $pegawai->provinsi->nama_provinsi ?? null;
-                        })
-                        ->filter()
-                        ->unique()
-                        ->values()
-                        ->all();
-
-                    return Str::limit(implode(', ', $wilayah), 50);
-                })
-                ->wrap(),
+                // Pastikan nama relasi di sini adalah 'pegawais' (jamak)
+                Tables\Columns\TextColumn::make('pegawais_count')
+                    ->label('Jumlah Pegawai')
+                    ->counts('pegawais')
+                    ->sortable(),
             ])
             ->filters([
                 //
@@ -73,13 +64,6 @@ class JabatanResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
