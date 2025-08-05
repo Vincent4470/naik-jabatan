@@ -127,7 +127,6 @@ class PegawaiResource extends Resource
                 Tables\Columns\TextColumn::make('kota.nama_kota_kab')->label('Kota/Kabupaten'),
                 Tables\Columns\TextColumn::make('kecamatan.nama_kecamatan')->label('Kecamatan'),
                 Tables\Columns\TextColumn::make('tanggal_lahir')->date()->label('Tanggal Lahir'),
-                Tables\Columns\TextColumn::make('user.username')->label('Username'),
                 Tables\Columns\TextColumn::make('jabatan.nama_jabatan')->label('Jabatan'),
 
             ])
