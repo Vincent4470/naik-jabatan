@@ -22,7 +22,7 @@ class StatusPengajuanResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('nama_status')
-                    ->label('Nama Status')
+                    ->label('Nama Statuss')
                     ->required()
                     ->maxLength(255),
             ]);
