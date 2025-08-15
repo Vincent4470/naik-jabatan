@@ -20,6 +20,8 @@ class PegawaiResource extends Resource
     // Set primary key yang dipakai model
     protected static ?string $recordKeyName = 'id_pegawai';
 
+    
+
     public static function form(Form $form): Form
     {
         return $form
