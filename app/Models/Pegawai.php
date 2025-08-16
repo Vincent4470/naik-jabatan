@@ -4,14 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Pegawai extends Model
 {
-    protected $primaryKey = 'id_pegawai';
+    use HasFactory;
 
+    protected $primaryKey = 'id_pegawai';
     public $incrementing = true;
     protected $keyType = 'int';
-
     protected $fillable = [
         'nama',
         'nip',
@@ -28,38 +31,38 @@ class Pegawai extends Model
         'id_atasan_langsung',
     ];
 
-    public function jabatan()
+    public function jabatan(): BelongsTo
     {
-        return $this->belongsTo(Jabatan::class, 'id_jabatan');
+        return $this->belongsTo(Jabatan::class, 'id_jabatan', 'id_jabatan');
     }
 
-    public function atasanLangsung()
+    public function atasanLangsung(): BelongsTo
     {
         return $this->belongsTo(Pegawai::class, 'id_atasan_langsung', 'id_pegawai');
     }
 
-    public function provinsi()
+    public function provinsi(): BelongsTo
     {
-        return $this->belongsTo(Provinsi::class, 'id_provinsi');
+        return $this->belongsTo(Provinsi::class, 'id_provinsi', 'id_provinsi');
     }
 
-    public function kota()
+    public function kota(): BelongsTo
     {
-        return $this->belongsTo(KotaKabupaten::class, 'id_kota_kabupaten');
+        return $this->belongsTo(KotaKabupaten::class, 'id_kota_kabupaten', 'id_kota_kabupaten');
     }
 
-    public function kecamatan()
+    public function kecamatan(): BelongsTo
     {
-        return $this->belongsTo(Kecamatan::class, 'id_kecamatan');
+        return $this->belongsTo(Kecamatan::class, 'id_kecamatan', 'id_kecamatan');
     }
 
-    public function user()
+    public function user(): HasOne
     {
-        return $this->hasOne(User::class, 'id_pegawai');
+        return $this->hasOne(User::class, 'id_pegawai', 'id_pegawai');
     }
 
-    public function pengajuan()
+    public function pengajuan(): HasMany
     {
-        return $this->hasMany(PengajuanKenaikan::class, 'id_pegawai');
+        return $this->hasMany(PengajuanKenaikan::class, 'id_pegawai', 'id_pegawai');
     }
 }

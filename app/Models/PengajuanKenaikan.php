@@ -4,9 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PengajuanKenaikan extends Model
 {
+    use HasFactory;
+
     protected $primaryKey = 'id_pengajuan';
     protected $fillable = [
         'id_pegawai',
@@ -17,43 +22,43 @@ class PengajuanKenaikan extends Model
         'catatan'
     ];
 
-    public function pegawai()
+    public function pegawai(): BelongsTo
     {
-        return $this->belongsTo(Pegawai::class, 'id_pegawai');
+        return $this->belongsTo(Pegawai::class, 'id_pegawai', 'id_pegawai');
     }
 
-    public function jabatanBaru()
+    public function jabatanBaru(): BelongsTo
     {
-        return $this->belongsTo(Jabatan::class, 'id_jabatan_baru');
+        return $this->belongsTo(Jabatan::class, 'id_jabatan_baru', 'id_jabatan');
     }
 
-    public function status()
+    public function status(): BelongsTo
     {
-        return $this->belongsTo(StatusPengajuan::class, 'id_status');
+        return $this->belongsTo(StatusPengajuan::class, 'id_status', 'id_status');
     }
 
-    public function dokumen()
+    public function dokumen(): HasMany
     {
-        return $this->hasMany(DokumentPengajuan::class, 'id_pengajuan');
+        return $this->hasMany(DokumentPengajuan::class, 'id_pengajuan', 'id_pengajuan');
     }
 
-    public function penilaian()
+    public function penilaian(): HasOne
     {
-        return $this->hasOne(Penilaian::class, 'id_pengajuan');
+        return $this->hasOne(Penilaian::class, 'id_pengajuan', 'id_pengajuan');
     }
 
-    public function persetujuan()
+    public function persetujuan(): HasOne
     {
-        return $this->hasOne(Persetujuan::class, 'id_pengajuan');
+        return $this->hasOne(Persetujuan::class, 'id_pengajuan', 'id_pengajuan');
     }
 
-    public function logStatus()
+    public function logStatus(): HasMany
     {
-        return $this->hasMany(PengajuanStatusLog::class, 'id_pengajuan');
+        return $this->hasMany(PengajuanStatusLog::class, 'id_pengajuan', 'id_pengajuan');
     }
 
-    public function periode()
+    public function periode(): BelongsTo
     {
-        return $this->belongsTo(Periode::class, 'id_periode');
+        return $this->belongsTo(Periode::class, 'id_periode', 'id_periode');
     }
 }

@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
         StatusPengajuansSeeder::class,
         AdminUserSeeder::class,
         subKriteriaPenilaianSeeder::class,
+        PegawaiDummySeeder::class,
+        PengajuanKenaikanDummySeeder::class,
     ]);
     }
 }
